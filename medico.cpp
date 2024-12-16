@@ -1,23 +1,28 @@
 #include "medico.h"
 #include <iostream>
 
-int Medico::contadorMedicos = 0;
+Medico::Medico(int ID, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& especialidad)
+    : IDMedico(ID), nombre(nombre), direccion(direccion), genero(genero), especialidad(especialidad), estado(true) {}
 
-Medico::Medico() : IDMedico(++contadorMedicos) {}
+int Medico::getIDMedico() const { return IDMedico; }
+std::string Medico::getNombre() const { return nombre; }
+std::string Medico::getDireccion() const { return direccion; }
+std::string Medico::getGenero() const { return genero; }
+std::string Medico::getEspecialidad() const { return especialidad; }
+std::string Medico::getEstado() const { return estado ? "Activo" : "Inactivo"; }
 
-int Medico::getIDMedico() const {
-    return IDMedico;
+void Medico::modificarDatos(const std::string& nueva_especialidad) {
+    especialidad = nueva_especialidad;
 }
 
-void Medico::registrarPersona() {
-    Persona::registrarPersona();
+void Medico::darDeAlta() { estado = true; }
+void Medico::darDeBaja() { estado = false; }
 
-    std::cout << "Ingrese la especialidad: ";
-    std::cin.ignore();
-    std::getline(std::cin, especialidad);
-}
-
-void Medico::mostrarPersona() const {
-    Persona::mostrarPersona();
+void Medico::mostrarInformacion() const {
+    std::cout << "ID: " << IDMedico << "\n";
+    std::cout << "Nombre: " << nombre << "\n";
+    std::cout << "Direccion: " << direccion << "\n";
+    std::cout << "Genero: " << genero << "\n";
     std::cout << "Especialidad: " << especialidad << "\n";
+    std::cout << "Estado: " << getEstado() << "\n";
 }

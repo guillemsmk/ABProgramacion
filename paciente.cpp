@@ -1,27 +1,33 @@
 #include "paciente.h"
 #include <iostream>
 
-int Paciente::contadorPacientes = 0;
+Paciente::Paciente(int ID, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& fechaNacimiento, const std::string& diagnostico)
+    : IDPaciente(ID), nombre(nombre), direccion(direccion), genero(genero), fechaNacimiento(fechaNacimiento), diagnostico(diagnostico), estado(true) {}
 
-Paciente::Paciente() : IDPaciente(++contadorPacientes) {}
 
-int Paciente::getIDPaciente() const {
-    return IDPaciente;
+int Paciente::getIDPaciente() const { return IDPaciente; }
+std::string Paciente::getNombre() const { return nombre; }
+std::string Paciente::getDireccion() const { return direccion; }
+std::string Paciente::getGenero() const { return genero; }
+std::string Paciente::getFechaNacimiento() const { return fechaNacimiento; }
+std::string Paciente::getDiagnostico() const { return diagnostico; }
+std::string Paciente::getEstado() const { return estado ? "Activo" : "Inactivo"; }
+
+void Paciente::modificarDatos(const std::string& nuevoNombre, const std::string& nuevaDireccion, const std::string& nuevoDiagnostico) {
+    nombre = nuevoNombre;
+    direccion = nuevaDireccion;
+    diagnostico = nuevoDiagnostico;
 }
 
-void Paciente::registrarPersona() {
-    Persona::registrarPersona();
+void Paciente::darDeAlta() { estado = true; }
+void Paciente::darDeBaja() { estado = false; }
 
-    std::cout << "Ingrese la fecha de nacimiento (DD/MM/AAAA): ";
-    std::cin.ignore();
-    std::getline(std::cin, fechaNacimiento);
-
-    std::cout << "Ingrese el genero (M/F/Otro): ";
-    std::getline(std::cin, genero);
-}
-
-void Paciente::mostrarPersona() const {
-    Persona::mostrarPersona();
-    std::cout << "Fecha de Nacimiento: " << fechaNacimiento << "\n";
+void Paciente::mostrarInformacion() const {
+    std::cout << "ID: " << IDPaciente << "\n";
+    std::cout << "Nombre: " << nombre << "\n";
+    std::cout << "Direccion: " << direccion << "\n";
     std::cout << "Genero: " << genero << "\n";
+    std::cout << "Fecha de Nacimiento: " << fechaNacimiento << "\n";
+    std::cout << "Diagnostico: " << diagnostico << "\n";
+    std::cout << "Estado: " << getEstado() << "\n";
 }
