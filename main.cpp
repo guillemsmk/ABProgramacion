@@ -2,11 +2,15 @@
 #include <vector>
 #include "paciente.h"
 #include "medico.h"
+#include "citas.h"
+void menuCitas();
 
 std::vector<Paciente> listaPacientes;
-std::vector<Medico> listaMedicos;
 int contador_paciente = 1;
+std::vector<Medico> listaMedicos;
 int contador_medico = 1;
+std::vector<Cita> listaCitas;
+int contador_cita = 1;
 
 void registrarPaciente() {
     std::string nombre, direccion, genero, fecha_nacimiento, diagnostico;
@@ -250,7 +254,8 @@ int main() {
         std::cout << "\nMenu Principal\n";
         std::cout << "1. Menu de Pacientes\n";
         std::cout << "2. Menu de Medicos\n";
-        std::cout << "3. Salir\n";
+        std::cout << "3. Menu de Citas\n";
+        std::cout << "4. Salir\n";
         std::cout << "Seleccione una opcion: ";
         std::cin >> opcion;
 
@@ -262,13 +267,146 @@ int main() {
             menuMedicos();
             break;
         case 3:
+            menuCitas();
+            break;
+        case 4:
             std::cout << "Saliendo del programa...\n";
             return 0;
         default:
             std::cout << "Intente de nuevo.\n";
             break;
         }
-    } while (opcion != 3);
+    } while (opcion != 4);
 
     return 0;
+}
+
+void agregarCita() {
+    int IDPaciente, IDMedico;
+    std::string fecha, hora, motivo;
+    bool urgencia;
+
+    std::cout << "Ingrese ID del paciente: ";
+    std::cin >> IDPaciente;
+    std::cout << "Ingrese ID del medico: ";
+    std::cin >> IDMedico;
+
+    Paciente* paciente = nullptr;
+    Medico* medico = nullptr;
+
+    for (auto& p : listaPacientes) {
+        if (p.getIDPaciente() == IDPaciente) {
+            paciente = &p;
+            break;
+        }
+    }
+    for (auto& m : listaMedicos) {
+        if (m.getIDMedico() == IDMedico) {
+            medico = &m;
+            break;
+        }
+    }
+
+    if (!paciente || !medico) {
+        std::cout << "Paciente o Medico no encontrado.\n";
+        return;
+    }
+    
+    std::cout << "Ingrese fecha (dd-mm-yyyy) ";
+    std::cin >> fecha;
+    std::cout << "Ingrese hora (hh:mm): ";
+    std::cin >> hora;
+    std::cout << "Ingrese motivo: ";
+    std::cin.ignore();
+    std::getline(std::cin, motivo);
+    std::cout << "Cita urgente? (1 Si, 0 No): ";
+    std::cin >> urgencia;
+
+    listaCitas.emplace_back(contador_cita++, *paciente, *medico, fecha, hora, motivo, urgencia);
+    std::cout << "Cita agregada.\n";
+}
+
+void modificarCita() {
+    int IDCita;
+    std::cout << "Ingrese ID de la cita a modificar: ";
+    std::cin >> IDCita;
+
+    for (auto& cita : listaCitas) {
+        if (cita.getIDCita() == IDCita) {
+            std::string nuevaFecha, nuevaHora, nuevoMotivo;
+            bool nuevaUrgencia;
+
+            std::cout << "Ingrese nueva fecha (dd-mm-yyyy) ";
+            std::cin >> nuevaFecha;
+            std::cout << "Ingrese hora (hh:mm): ";
+            std::cin >> nuevaHora;
+            std::cout << "Ingrese motivo: ";
+            std::cin.ignore();
+            std::getline(std::cin, nuevoMotivo);
+            std::cout << "Cita urgente? (1 Si, 2 No): ";
+            std::cin >> nuevaUrgencia;
+
+            cita.modificarCita(nuevaFecha, nuevaHora, nuevoMotivo, nuevaUrgencia);
+            std::cout << "Cita modificada.\n";
+            return;
+        }
+    }
+    std::cout << "Cita no encontrada.\n";
+}
+
+void eliminarCita() {
+    int IDCita;
+    std::cout << "Ingrese ID de la cita a eliminar: ";
+    std::cin >> IDCita;
+
+    for (auto it = listaCitas.begin(); it != listaCitas.end(); ++it) {
+        if (it->getIDCita() == IDCita) {
+            listaCitas.erase(it);
+            std::cout << "Cita eliminada.\n";
+            return;
+        }
+    }
+    std::cout << "Cita no encontrada.\n";
+}
+
+void mostrarXUrgencia() {
+    std::cout << "Citas urgentes: ";
+    for (const auto& cita : listaCitas) {
+        if (cita.esUrgente()) {
+            cita.mostrarInformacion();
+        }
+    }
+}
+
+void menuCitas() {
+    int opcion;
+    do {
+        std::cout << "\nMenu de Citas\n";
+        std::cout << "1. Agregar Cita\n";
+        std::cout << "2. Eliminar Cita\n";
+        std::cout << "3. Modificar Cita\n";
+        std::cout << "4. Mostrar Citas por Urgencia\n";
+        std::cout << "5. Volver\n";
+        std::cout << "Seleccione una opcion: ";
+        std::cin >> opcion;
+
+        switch (opcion) {
+        case 1:
+            agregarCita();
+            break;
+        case 2:
+            eliminarCita();
+            break;
+        case 3:
+            modificarCita();
+            break;
+        case 4:
+            mostrarXUrgencia();
+            break;
+        case 5:
+            return;
+        default:
+            std::cout << "Opcion no valida.\n";
+        }
+    } while (opcion != 5);
 }
