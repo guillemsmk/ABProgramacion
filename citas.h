@@ -11,13 +11,13 @@ private:
 	int IDCita;
 	Paciente paciente;
 	Medico medico;
-	std::string fecha;
+	std::string fechaCita;
 	std::string hora;
 	std::string motivo;
 	bool urgencia;
 
 public:
-	Cita(int IDCita, const Paciente& paciente, const Medico& medico, const std::string fecha, const std::string hora, std::string motivo, bool urgencia);
+	Cita(int IDCita, const Paciente& paciente, const Medico& medico, const std::string fechaCita, const std::string hora, std::string motivo, bool urgencia);
 
 	int getIDCita() const;
 	Paciente getP() const;

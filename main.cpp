@@ -1,9 +1,13 @@
 #include <iostream>
 #include <vector>
+#include <regex>
 #include "paciente.h"
 #include "medico.h"
 #include "citas.h"
 void menuCitas();
+bool validarFecha(const std::string& fechaNacimiento);
+bool validarGenero(const std::string& genero);
+bool validarVacio(const std::string& entrada, const std::string& campo);
 
 std::vector<Paciente> listaPacientes;
 int contadorPaciente = 1;
@@ -15,21 +19,31 @@ int contadorCita = 1;
 void registrarPaciente() {
     std::string nombre, direccion, genero, fechaNacimiento, diagnostico;
 
-    std::cout << "Ingrese nombre del paciente: ";
-    std::cin.ignore();
-    std::getline(std::cin, nombre);
+    do {
+        std::cout << "Ingrese nombre del paciente: ";
+        std::cin.ignore();
+        std::getline(std::cin, nombre);
+    } while (!validarVacio(nombre, "Nombre"));
 
-    std::cout << "Ingrese direccion del paciente: ";
-    std::getline(std::cin, direccion);
+    do {
+        std::cout << "Ingrese direccion del paciente: ";
+        std::getline(std::cin, direccion);
+    } while(!validarVacio(direccion, "Direccion"));
 
-    std::cout << "Ingrese genero (M/F/Otro): ";
-    std::getline(std::cin, genero);
+    do {
+        std::cout << "Ingrese genero (M/F/Otro): ";
+        std::getline(std::cin, genero);
+    } while (!validarGenero(genero));
 
-    std::cout << "Ingrese fecha de nacimiento (dd-mm-yyyy): ";
-    std::getline(std::cin, fechaNacimiento);
+    do {
+        std::cout << "Ingrese fecha de nacimiento (dd-mm-yyyy): ";
+        std::getline(std::cin, fechaNacimiento);
+    } while (!validarFecha(fechaNacimiento));
 
-    std::cout << "Ingrese diagnostico: ";
-    std::getline(std::cin, diagnostico);
+    do {
+        std::cout << "Ingrese diagnostico: ";
+        std::getline(std::cin, diagnostico);
+    } while (!validarVacio(diagnostico, "Diagnostico"));
 
     Paciente nuevoPaciente(contadorPaciente++, nombre, direccion, genero, fechaNacimiento, diagnostico);
     listaPacientes.push_back(nuevoPaciente);
@@ -43,15 +57,21 @@ void modificarPaciente() {
     std::cout << "Ingrese el ID del paciente a modificar: ";
     std::cin >> ID;
 
+    bool encontrado = false;
     for (auto& paciente : listaPacientes) {
         if (paciente.getIDPaciente() == ID) {
-            std::cout << "Ingrese nuevo nombre: ";
-            std::cin.ignore();
-            std::getline(std::cin, nuevoNombre);
+            encontrado = true;
 
-            std::cout << "Ingrese nueva direccion: ";
-            std::getline(std::cin, nuevaDireccion);
+            do {
+                std::cout << "Ingrese nuevo nombre: ";
+                std::cin.ignore();
+                std::getline(std::cin, nuevoNombre);
+            } while (!validarVacio(nuevoNombre, "Nombre"));
 
+            do {
+                std::cout << "Ingrese nueva direccion: ";
+                std::getline(std::cin, nuevaDireccion);
+            } while (!validarVacio(nuevaDireccion, "Direccion"));
             std::cout << "Ingrese nuevo diagnostico: ";
             std::getline(std::cin, nuevoDiagnostico);
 
@@ -60,7 +80,9 @@ void modificarPaciente() {
             return;
         }
     }
-    std::cout << "Paciente no encontrado.\n";
+    if (!encontrado) {
+        std::cout << "Paciente no encontrado.\n";
+    }
 }
 
 void altaBajaPaciente() {
@@ -137,18 +159,26 @@ void menuPacientes() {
 void registrarMedico() {
     std::string nombre, direccion, genero, especialidad;
 
-    std::cout << "Ingrese nombre del medico: ";
-    std::cin.ignore();
-    std::getline(std::cin, nombre);
+    do {
+        std::cout << "Ingrese nombre del medico: ";
+        std::cin.ignore();
+        std::getline(std::cin, nombre);
+    } while (!validarVacio(nombre, "Nombre"));
 
-    std::cout << "Ingrese direccion del medico: ";
-    std::getline(std::cin, direccion);
+    do {
+        std::cout << "Ingrese direccion del medico: ";
+        std::getline(std::cin, direccion);
+    } while (!validarVacio(direccion, "Direccion"));
 
-    std::cout << "Ingrese genero (M/F/Otro): ";
-    std::getline(std::cin, genero);
+    do {
+        std::cout << "Ingrese genero (M/F/Otro): ";
+        std::getline(std::cin, genero);
+    } while (!validarGenero(genero));
 
-    std::cout << "Ingrese especialidad del medico: ";
-    std::getline(std::cin, especialidad);
+    do {
+        std::cout << "Ingrese especialidad del medico: ";
+        std::getline(std::cin, especialidad);
+    } while (!validarVacio(especialidad, "Especialidad"));
 
     Medico nuevoMedico(contadorMedico++, nombre, direccion, genero, especialidad);
     listaMedicos.push_back(nuevoMedico);
@@ -162,21 +192,31 @@ void modificarMedico() {
     std::cout << "Ingrese el ID del medico a modificar: ";
     std::cin >> ID;
 
+    bool encontrado = false;
     for (auto& medico : listaMedicos) {
         if (medico.getIDMedico() == ID) {
-            std::cout << "Ingrese nueva direccion: ";
-            std::cin.ignore();
-            std::getline(std::cin, nuevaDireccion);
-            std::cout << "Ingrese nueva especialidad: ";
-            std::cin.ignore();
-            std::getline(std::cin, nuevaEspecialidad);
+            encontrado = true;
+
+            do {
+                std::cout << "Ingrese nueva direccion: ";
+                std::cin.ignore();
+                std::getline(std::cin, nuevaDireccion);
+            } while (!validarVacio(nuevaDireccion, "Direccion"));
+
+            do {
+                std::cout << "Ingrese nueva especialidad: ";
+                std::cin.ignore();
+                std::getline(std::cin, nuevaEspecialidad);
+            } while (!validarVacio(nuevaEspecialidad, "Especialidad"));
 
             medico.modificarDatos(nuevaDireccion, nuevaEspecialidad);
             std::cout << "Medico modificado con exito.\n";
             return;
         }
     }
-    std::cout << "Medico no encontrado.\n";
+    if (!encontrado) {
+        std::cout << "Medico no encontrado.\n";
+    }
 }
 
 void altaBajaMedico() {
@@ -252,7 +292,7 @@ void menuMedicos() {
 
 void agregarCita() {
     int IDPaciente, IDMedico;
-    std::string fecha, hora, motivo;
+    std::string fechaCita, hora, motivo;
     bool urgencia;
 
     std::cout << "Ingrese ID del paciente: ";
@@ -282,7 +322,7 @@ void agregarCita() {
     }
     
     std::cout << "Ingrese fecha (dd-mm-yyyy) ";
-    std::cin >> fecha;
+    std::cin >> fechaCita;
     std::cout << "Ingrese hora (hh:mm): ";
     std::cin >> hora;
     std::cout << "Ingrese motivo: ";
@@ -291,7 +331,7 @@ void agregarCita() {
     std::cout << "Cita urgente? (1 Si, 0 No): ";
     std::cin >> urgencia;
 
-    listaCitas.emplace_back(contadorCita++, *paciente, *medico, fecha, hora, motivo, urgencia);
+    listaCitas.emplace_back(contadorCita++, *paciente, *medico, fechaCita, hora, motivo, urgencia);
     std::cout << "Cita agregada.\n";
 }
 
@@ -350,13 +390,7 @@ void mostrarXUrgencia() {
 void menuCitas() {
     int opcion;
     do {
-        std::cout << "\nMenu de Citas\n";
-        std::cout << "1. Agregar Cita\n";
-        std::cout << "2. Eliminar Cita\n";
-        std::cout << "3. Modificar Cita\n";
-        std::cout << "4. Mostrar Citas por Urgencia\n";
-        std::cout << "5. Volver\n";
-        std::cout << "Seleccione una opcion: ";
+        std::cout << "\nMenu de Citas\n1. Agregar Cita\n2. Eliminar Cita\n3. Modificar Cita\n4. Mostrar Citas por Urgencia\n5. Volver\nSeleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
@@ -380,15 +414,52 @@ void menuCitas() {
     } while (opcion != 5);
 }
 
+bool validarFecha(const std::string& fechaNacimiento) {
+    std::regex formatoFecha(R"(^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$)");
+
+    if (!std::regex_match(fechaNacimiento, formatoFecha)) {
+        std::cout << "Formato invalido.\n";
+        return false;
+    }
+
+    int dia = std::stoi(fechaNacimiento.substr(0, 2));
+    int mes = std::stoi(fechaNacimiento.substr(3, 2));
+    int anio = std::stoi(fechaNacimiento.substr(6, 4));
+
+    if (mes == 2) {
+        bool bisiesto = (anio % 4 == 0 && anio % 100 != 0) || (anio % 400 == 0);
+        if (dia > (bisiesto ? 29 : 28)) return false;
+    }
+    else if (mes == 4 || mes == 6 || mes == 9 || mes == 11) {
+        if (dia > 30) return false;
+    }
+    else {
+        if (dia > 31) return false;
+    }
+    return true;
+}
+
+bool validarGenero(const std::string& genero) {
+    if (genero == "M" || genero == "F" || genero == "Otro") {
+        return true;
+    }
+    else {
+        std::cout << "Genero invalido.\n";
+        return false;
+    }
+}
+
+bool validarVacio(const std::string& entrada, const std::string& campo) {
+    if (entrada.empty()) {
+        std::cout << "El campo '" << campo << "' no puede estar vacio.\n";
+        return false;
+    }
+    return true;
+}
 int main() {
     int opcion;
     do {
-        std::cout << "\nMenu Principal\n";
-        std::cout << "1. Menu de Pacientes\n";
-        std::cout << "2. Menu de Medicos\n";
-        std::cout << "3. Menu de Citas\n";
-        std::cout << "4. Salir\n";
-        std::cout << "Seleccione una opcion: ";
+        std::cout << "\nMenu Principal\n1. Menu de Pacientes\n2. Menu de Medicos\n3. Menu de Citas\n4. Salir\nSeleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
