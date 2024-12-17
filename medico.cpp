@@ -11,8 +11,9 @@ std::string Medico::getGenero() const { return genero; }
 std::string Medico::getEspecialidad() const { return especialidad; }
 std::string Medico::getEstado() const { return estado ? "Activo" : "Inactivo"; }
 
-void Medico::modificarDatos(const std::string& nueva_especialidad) {
-    especialidad = nueva_especialidad;
+void Medico::modificarDatos(const std::string& nuevaDireccion, const std::string& nuevaEspecialidad) {
+    direccion = nuevaDireccion;
+    especialidad = nuevaEspecialidad;
 }
 
 void Medico::darDeAlta() { estado = true; }

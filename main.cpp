@@ -6,14 +6,14 @@
 void menuCitas();
 
 std::vector<Paciente> listaPacientes;
-int contador_paciente = 1;
+int contadorPaciente = 1;
 std::vector<Medico> listaMedicos;
-int contador_medico = 1;
+int contadorMedico = 1;
 std::vector<Cita> listaCitas;
-int contador_cita = 1;
+int contadorCita = 1;
 
 void registrarPaciente() {
-    std::string nombre, direccion, genero, fecha_nacimiento, diagnostico;
+    std::string nombre, direccion, genero, fechaNacimiento, diagnostico;
 
     std::cout << "Ingrese nombre del paciente: ";
     std::cin.ignore();
@@ -26,19 +26,19 @@ void registrarPaciente() {
     std::getline(std::cin, genero);
 
     std::cout << "Ingrese fecha de nacimiento (dd-mm-yyyy): ";
-    std::getline(std::cin, fecha_nacimiento);
+    std::getline(std::cin, fechaNacimiento);
 
     std::cout << "Ingrese diagnostico: ";
     std::getline(std::cin, diagnostico);
 
-    Paciente nuevo_paciente(contador_paciente++, nombre, direccion, genero, fecha_nacimiento, diagnostico);
-    listaPacientes.push_back(nuevo_paciente);
+    Paciente nuevoPaciente(contadorPaciente++, nombre, direccion, genero, fechaNacimiento, diagnostico);
+    listaPacientes.push_back(nuevoPaciente);
     std::cout << "Paciente registrado con exito.\n";
 }
 
 void modificarPaciente() {
     int ID;
-    std::string nuevo_nombre, nueva_direccion, nuevo_diagnostico;
+    std::string nuevoNombre, nuevaDireccion, nuevoDiagnostico;
 
     std::cout << "Ingrese el ID del paciente a modificar: ";
     std::cin >> ID;
@@ -47,15 +47,15 @@ void modificarPaciente() {
         if (paciente.getIDPaciente() == ID) {
             std::cout << "Ingrese nuevo nombre: ";
             std::cin.ignore();
-            std::getline(std::cin, nuevo_nombre);
+            std::getline(std::cin, nuevoNombre);
 
             std::cout << "Ingrese nueva direccion: ";
-            std::getline(std::cin, nueva_direccion);
+            std::getline(std::cin, nuevaDireccion);
 
             std::cout << "Ingrese nuevo diagnostico: ";
-            std::getline(std::cin, nuevo_diagnostico);
+            std::getline(std::cin, nuevoDiagnostico);
 
-            paciente.modificarDatos(nuevo_nombre, nueva_direccion, nuevo_diagnostico);
+            paciente.modificarDatos(nuevoNombre, nuevaDireccion, nuevoDiagnostico);
             std::cout << "Paciente modificado con exito.\n";
             return;
         }
@@ -150,25 +150,28 @@ void registrarMedico() {
     std::cout << "Ingrese especialidad del medico: ";
     std::getline(std::cin, especialidad);
 
-    Medico nuevo_medico(contador_medico++, nombre, direccion, genero, especialidad);
-    listaMedicos.push_back(nuevo_medico);
+    Medico nuevoMedico(contadorMedico++, nombre, direccion, genero, especialidad);
+    listaMedicos.push_back(nuevoMedico);
     std::cout << "Medico registrado con exito.\n";
 }
 
 void modificarMedico() {
     int ID;
-    std::string nueva_especialidad;
+    std::string nuevaDireccion, nuevaEspecialidad;
 
     std::cout << "Ingrese el ID del medico a modificar: ";
     std::cin >> ID;
 
     for (auto& medico : listaMedicos) {
         if (medico.getIDMedico() == ID) {
+            std::cout << "Ingrese nueva direccion: ";
+            std::cin.ignore();
+            std::getline(std::cin, nuevaDireccion);
             std::cout << "Ingrese nueva especialidad: ";
             std::cin.ignore();
-            std::getline(std::cin, nueva_especialidad);
+            std::getline(std::cin, nuevaEspecialidad);
 
-            medico.modificarDatos(nueva_especialidad);
+            medico.modificarDatos(nuevaDireccion, nuevaEspecialidad);
             std::cout << "Medico modificado con exito.\n";
             return;
         }
@@ -219,6 +222,7 @@ void buscarMedico() {
     }
     std::cout << "Medico no encontrado.\n";
 }
+
 void menuMedicos() {
     int opcion;
     do {
@@ -244,41 +248,6 @@ void menuMedicos() {
             std::cout << "Opcion invalida.\n";
         }
     } while (opcion != 5);
-}
-
-
-
-int main() {
-    int opcion;
-    do {
-        std::cout << "\nMenu Principal\n";
-        std::cout << "1. Menu de Pacientes\n";
-        std::cout << "2. Menu de Medicos\n";
-        std::cout << "3. Menu de Citas\n";
-        std::cout << "4. Salir\n";
-        std::cout << "Seleccione una opcion: ";
-        std::cin >> opcion;
-
-        switch (opcion) {
-        case 1:
-            menuPacientes();
-            break;
-        case 2:
-            menuMedicos();
-            break;
-        case 3:
-            menuCitas();
-            break;
-        case 4:
-            std::cout << "Saliendo del programa...\n";
-            return 0;
-        default:
-            std::cout << "Intente de nuevo.\n";
-            break;
-        }
-    } while (opcion != 4);
-
-    return 0;
 }
 
 void agregarCita() {
@@ -322,7 +291,7 @@ void agregarCita() {
     std::cout << "Cita urgente? (1 Si, 0 No): ";
     std::cin >> urgencia;
 
-    listaCitas.emplace_back(contador_cita++, *paciente, *medico, fecha, hora, motivo, urgencia);
+    listaCitas.emplace_back(contadorCita++, *paciente, *medico, fecha, hora, motivo, urgencia);
     std::cout << "Cita agregada.\n";
 }
 
@@ -343,7 +312,7 @@ void modificarCita() {
             std::cout << "Ingrese motivo: ";
             std::cin.ignore();
             std::getline(std::cin, nuevoMotivo);
-            std::cout << "Cita urgente? (1 Si, 2 No): ";
+            std::cout << "Cita urgente? (1 Si, 0 No): ";
             std::cin >> nuevaUrgencia;
 
             cita.modificarCita(nuevaFecha, nuevaHora, nuevoMotivo, nuevaUrgencia);
@@ -409,4 +378,37 @@ void menuCitas() {
             std::cout << "Opcion no valida.\n";
         }
     } while (opcion != 5);
+}
+
+int main() {
+    int opcion;
+    do {
+        std::cout << "\nMenu Principal\n";
+        std::cout << "1. Menu de Pacientes\n";
+        std::cout << "2. Menu de Medicos\n";
+        std::cout << "3. Menu de Citas\n";
+        std::cout << "4. Salir\n";
+        std::cout << "Seleccione una opcion: ";
+        std::cin >> opcion;
+
+        switch (opcion) {
+        case 1:
+            menuPacientes();
+            break;
+        case 2:
+            menuMedicos();
+            break;
+        case 3:
+            menuCitas();
+            break;
+        case 4:
+            std::cout << "Saliendo del programa...\n";
+            return 0;
+        default:
+            std::cout << "Intente de nuevo.\n";
+            break;
+        }
+    } while (opcion != 4);
+
+    return 0;
 }

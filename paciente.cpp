@@ -4,7 +4,6 @@
 Paciente::Paciente(int ID, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& fechaNacimiento, const std::string& diagnostico)
     : IDPaciente(ID), nombre(nombre), direccion(direccion), genero(genero), fechaNacimiento(fechaNacimiento), diagnostico(diagnostico), estado(true) {}
 
-
 int Paciente::getIDPaciente() const { return IDPaciente; }
 std::string Paciente::getNombre() const { return nombre; }
 std::string Paciente::getDireccion() const { return direccion; }
