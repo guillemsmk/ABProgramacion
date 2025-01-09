@@ -1,10 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <regex>
+#include <fstream>
+#include <sstream>
 #include "paciente.h"
 #include "medico.h"
 #include "citas.h"
+
 void menuCitas();
+void cargarPacientes();
+void cargarMedicos();
 bool validarFecha(const std::string& fechaNacimiento);
 bool validarGenero(const std::string& genero);
 bool validarVacio(const std::string& entrada, const std::string& campo);
@@ -129,6 +134,60 @@ void buscarPaciente() {
     std::cout << "Paciente no encontrado.\n";
 }
 
+
+const std::string rutaP = "C:/Users/gdebr/source/repos/ABProgramacion2/pacientes.txt";
+
+void guardarPacientes() {
+    std::ofstream archivo(rutaP);
+    if (!archivo.is_open()) {
+        std::cout << "Error al abrir el archivo de pacientes.\n";
+        return;
+    }
+    for (const auto& paciente : listaPacientes) {
+        archivo << paciente.getIDPaciente() << "|"
+            << paciente.getNombre() << "|"
+            << paciente.getDireccion() << "|"
+            << paciente.getGenero() << "|"
+            << paciente.getFechaNacimiento() << "|"
+            << paciente.getDiagnostico() << "|"
+            << paciente.getEstado() << "\n";
+    }
+
+    archivo.close();
+    std::cout << "Los datos de los pacientes han sido guardados correctamente.\n";
+}
+
+void cargarPacientes() {
+    std::ifstream archivo(rutaP);
+    if (!archivo.is_open()) {
+        std::cout << "No se encontro el archivo, creando uno nuevo...\n";
+        return;
+    }
+
+    listaPacientes.clear();
+    std::string linea;
+    while (std::getline(archivo, linea)) {
+        std::stringstream ss(linea);
+        std::string IDPaciente, Nombre, Direccion, Genero, FechaNacimiento, Diagnostico, Estado;
+
+        std::getline(ss, IDPaciente, '|');
+        std::getline(ss, Direccion, '|');
+        std::getline(ss, Genero, '|');
+        std::getline(ss, FechaNacimiento, '|');
+        std::getline(ss, Diagnostico, '|');
+        std::getline(ss, Estado, '|');
+
+        bool estadoBool = (Estado == "Activo");
+        listaPacientes.emplace_back(std::stoi(IDPaciente), Nombre, Direccion, Genero, FechaNacimiento, Diagnostico);
+        if (!estadoBool) {
+            listaPacientes.back().darDeBaja();
+        }
+    }
+
+    archivo.close();
+    std::cout << "Datos de los pacientes cargados correctamente.\n";
+}
+
 void menuPacientes() {
     int opcion;
     do {
@@ -187,7 +246,7 @@ void registrarMedico() {
 
 void modificarMedico() {
     int ID;
-    std::string nuevaDireccion, nuevaEspecialidad;
+    std::string nuevoNombre, nuevaDireccion, nuevaEspecialidad;
 
     std::cout << "Ingrese el ID del medico a modificar: ";
     std::cin >> ID;
@@ -196,6 +255,12 @@ void modificarMedico() {
     for (auto& medico : listaMedicos) {
         if (medico.getIDMedico() == ID) {
             encontrado = true;
+
+            do{
+                std::cout << "Ingrese nuevo nombre: ";
+                std::cin.ignore();
+                std::getline(std::cin, nuevoNombre);
+            } while (!validarVacio(nuevoNombre, "Nombre"));
 
             do {
                 std::cout << "Ingrese nueva direccion: ";
@@ -209,7 +274,7 @@ void modificarMedico() {
                 std::getline(std::cin, nuevaEspecialidad);
             } while (!validarVacio(nuevaEspecialidad, "Especialidad"));
 
-            medico.modificarDatos(nuevaDireccion, nuevaEspecialidad);
+            medico.modificarDatos(nuevoNombre, nuevaDireccion, nuevaEspecialidad);
             std::cout << "Medico modificado con exito.\n";
             return;
         }
@@ -261,6 +326,59 @@ void buscarMedico() {
         }
     }
     std::cout << "Medico no encontrado.\n";
+}
+
+
+const std::string rutaM = "C:/Users/gdebr/source/repos/ABProgramacion2/medicos.txt";
+
+void guardarMedicos() {
+    std::ofstream archivo(rutaM);
+    if (!archivo.is_open()) {
+        std::cout << "Error al abrir el archivo de medicos.\n";
+        return;
+    }
+    for (const auto& medico : listaMedicos) {
+        archivo << medico.getIDMedico() << "|"
+            << medico.getNombre() << "|"
+            << medico.getDireccion() << "|"
+            << medico.getGenero() << "|"
+            << medico.getEspecialidad() << "|"
+            << medico.getEstado() << "\n";
+    }
+
+    archivo.close();
+    std::cout << "Los datos de los medicos han sido guardados correctamente.\n";
+}
+
+void cargarMedicos() {
+    std::ifstream archivo(rutaM);
+    if (!archivo.is_open()) {
+        std::cout << "No se encontro el archivo, creando uno nuevo...\n";
+        return;
+    }
+
+    listaMedicos.clear();
+    std::string linea;
+    while (std::getline(archivo, linea)) {
+        std::stringstream ss(linea);
+        std::string IDMedico, Nombre, Direccion, Genero, Especialidad, Estado;
+
+        std::getline(ss, IDMedico, '|');
+        std::getline(ss, Nombre, '|');
+        std::getline(ss, Direccion, '|');
+        std::getline(ss, Genero, '|');
+        std::getline(ss, Especialidad, '|');
+        std::getline(ss, Estado, '|');
+
+        bool estadoBool = (Estado == "Activo");
+        listaMedicos.emplace_back(std::stoi(IDMedico), Nombre, Direccion, Genero, Especialidad);
+        if (!estadoBool) {
+            listaMedicos.back().darDeBaja();
+        }
+    }
+
+    archivo.close();
+    std::cout << "Datos de los medicos cargados correctamente.\n";
 }
 
 void menuMedicos() {
@@ -456,7 +574,10 @@ bool validarVacio(const std::string& entrada, const std::string& campo) {
     }
     return true;
 }
+
 int main() {
+    cargarMedicos();
+    cargarPacientes();
     int opcion;
     do {
         std::cout << "\nMenu Principal\n1. Menu de Pacientes\n2. Menu de Medicos\n3. Menu de Citas\n4. Salir\nSeleccione una opcion: ";
@@ -473,6 +594,8 @@ int main() {
             menuCitas();
             break;
         case 4:
+            guardarMedicos();
+            guardarPacientes();
             std::cout << "Saliendo del programa...\n";
             return 0;
         default:

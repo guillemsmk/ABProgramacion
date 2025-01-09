@@ -23,7 +23,7 @@ public:
     std::string getEspecialidad() const;
     std::string getEstado() const;
 
-    void modificarDatos(const std::string& nuevaDireccion, const std::string& nuevaEspecialidad);
+    void modificarDatos(const std::string& nuevoNombre, const std::string& nuevaDireccion, const std::string& nuevaEspecialidad);
     void darDeAlta();
     void darDeBaja();
     void mostrarInformacion() const;
