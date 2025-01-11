@@ -121,6 +121,25 @@ void modificarPaciente() {
     }
 }
 
+void eliminarPaciente() {
+    int IDPaciente;
+    std::cout << "Ingrese el ID del paciente a eliminar: ";
+    std::cin >> IDPaciente;
+
+    auto it = std::find_if(listaPacientes.begin(), listaPacientes.end(),
+        [IDPaciente](const Paciente& p) {
+            return p.getIDPaciente() == IDPaciente;
+        });
+
+    if (it != listaPacientes.end()) {
+        listaPacientes.erase(it);
+        std::cout << "El paciente seleccionado ha sido eliminado.\n";
+    }
+    else {
+        std::cout << "El paciente seleccionado no ha sido encontrado.\n";
+    }
+}
+
 void altaBajaPaciente() {
     int ID;
     int opcion;
@@ -163,6 +182,19 @@ void buscarPaciente() {
         }
     }
     std::cout << "Paciente no encontrado.\n";
+}
+
+void listarPacientes() {
+    if (listaPacientes.empty()) {
+        std::cout << "No hay pacientes registrados.\n";
+        return;
+    }
+
+    std::cout << "Lista de Pacientes: \n";
+    for (const auto& paciente : listaPacientes) {
+        paciente.mostrarInformacion();
+        std::cout << "------------------\n";
+    }
 }
 
 void cargarPacientes() {
@@ -220,7 +252,7 @@ void guardarPacientes() {
 void menuPacientes() {
     int opcion;
     do {
-        std::cout << "Menu Pacientes\n1. Registrar\n2. Modificar\n3. Alta/Baja\n4. Buscar por ID\n5. Volver\nSeleccione una opcion: ";
+        std::cout << "Menu Pacientes\n1. Registrar\n2. Modificar\n3. Eliminar paciente\n4. Alta/Baja\n5. Buscar por ID\n6. Listar todos los pacientes\n7. Volver\nSeleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
@@ -233,18 +265,25 @@ void menuPacientes() {
             guardarPacientes();
             break;
         case 3:
-            altaBajaPaciente();
+            eliminarPaciente();
             guardarPacientes();
             break;
         case 4:
-            buscarPaciente();
+            altaBajaPaciente();
+            guardarPacientes();
             break;
         case 5:
+            buscarPaciente();
+            break;
+        case 6:
+            listarPacientes();
+            break;
+        case 7:
             return;
         default:
             std::cout << "Opcion invalida.\n";
         }
-    } while (opcion != 5);
+    } while (opcion != 7);
 }
 
 //---------------------------------------------
@@ -318,6 +357,25 @@ void modificarMedico() {
     }
 }
 
+void eliminarMedico() {
+    int IDMedico;
+    std::cout << "Ingrese el ID del medico a eliminar: ";
+    std::cin >> IDMedico;
+
+    auto it = std::find_if(listaMedicos.begin(), listaMedicos.end(),
+        [IDMedico](const Medico& m) {
+            return m.getIDMedico() == IDMedico;
+        });
+
+    if (it != listaMedicos.end()) {
+        listaMedicos.erase(it);
+        std::cout << "El medico seleccionado ha sido eliminado.\n";
+    }
+    else {
+        std::cout << "El medico seleccionado no ha sido encontrado.\n";
+    }
+}
+
 void altaBajaMedico() {
     int ID;
     int opcion;
@@ -360,6 +418,19 @@ void buscarMedico() {
         }
     }
     std::cout << "Medico no encontrado.\n";
+}
+
+void listarMedicos() {
+    if (listaMedicos.empty()) {
+        std::cout << "No hay medicos registrados.\n";
+        return;
+    }
+
+    std::cout << "Lista de Medicos: \n";
+    for (const auto& medico : listaMedicos) {
+        medico.mostrarInformacion();
+        std::cout << "------------------\n";
+    }
 }
 
 void cargarMedicos() {
@@ -415,7 +486,7 @@ void guardarMedicos() {
 void menuMedicos() {
     int opcion;
     do {
-        std::cout << "Menu Medicos\n1. Registrar\n2. Modificar\n3. Alta/Baja\n4. Buscar por ID\n5. Volver\nSeleccione una opcion: ";
+        std::cout << "Menu Medicos\n1. Registrar\n2. Modificar\n3. Eliminar medico\n4. Alta/Baja\n5. Buscar por ID\n6. Listar todos los medicos\n7. Volver\nSeleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
@@ -428,18 +499,25 @@ void menuMedicos() {
             guardarMedicos();
             break;
         case 3:
-            altaBajaMedico();
+            eliminarMedico();
             guardarMedicos();
             break;
         case 4:
-            buscarMedico();
+            altaBajaMedico();
+            guardarMedicos();
             break;
         case 5:
+            buscarMedico();
+            break;
+        case 6:
+            listarMedicos();
+            break;
+        case 7:
             return;
         default:
             std::cout << "Opcion invalida.\n";
         }
-    } while (opcion != 5);
+    } while (opcion != 7);
 }
 
 //---------------------------------------------
@@ -541,31 +619,130 @@ void mostrarXUrgencia() {
     }
 }
 
+void listarCitas() {
+    if (listaCitas.empty()) {
+        std::cout << "No hay citas registradas.\n";
+        return;
+    }
+
+    std::cout << "Lista de Citas: \n";
+    for (const auto& cita : listaCitas) {
+        cita.mostrarInformacion();
+        std::cout << "------------------\n";
+    }
+}
+
+void cargarCitas() {
+    std::ifstream archivo(rutaC);
+    if (!archivo) {
+        std::cerr << "No se encontro el archivo, creando uno nuevo...\n";
+        return;
+    }
+
+    listaCitas.clear();
+    std::string linea;
+    int maxIDCita = 0;
+
+    while (std::getline(archivo, linea)) {
+        std::stringstream ss(linea);
+        std::string IDCita, IDPaciente, IDMedico, fechaCita, hora, motivo, urgencia;
+
+        std::getline(ss, IDCita, '|');
+        std::getline(ss, IDPaciente, '|');
+        std::getline(ss, IDMedico, '|');
+        std::getline(ss, fechaCita, '|');
+        std::getline(ss, hora, '|');
+        std::getline(ss, motivo, '|');
+        std::getline(ss, urgencia, '|');
+
+    int IDCitaInt = std::stoi(IDCita);
+    int IDPacienteInt = std::stoi(IDPaciente);
+    int IDMedicoInt = std::stoi(IDMedico);
+    bool urgenciaBool = (urgencia == "1");
+
+    Paciente* paciente = nullptr;
+    Medico* medico = nullptr;
+
+        for (auto& p : listaPacientes) {
+            if (p.getIDPaciente() == IDPacienteInt) {
+                paciente = &p;
+                break;
+            }
+        }
+
+        for (auto& m : listaMedicos) {
+            if (m.getIDMedico() == IDMedicoInt) {
+                medico = &m;
+                break;
+            }
+        }
+
+        if (paciente && medico) {
+            listaCitas.emplace_back(IDCitaInt, *paciente, *medico, fechaCita, hora, motivo, urgenciaBool);
+            maxIDCita = std::max(maxIDCita, IDCitaInt);
+        }
+        else {
+            std::cerr << "Error: No se encontró el paciente o médico para la cita con ID " << IDCita << ".\n";
+        }
+    }
+
+    contadorCita = maxIDCita + 1;
+    archivo.close();
+    std::cout << "Datos de las citas cargados correctamente.\n";
+}
+
+void guardarCitas() {
+    std::ofstream archivo(rutaC);
+    if (!archivo) {
+        std::cerr << "Error al abrir el archivo de medicos.\n";
+            return;
+    }
+
+    for (const auto& cita : listaCitas) {
+        archivo << cita.getIDCita() << "|"
+            << cita.getP().getIDPaciente() << "|"
+            << cita.getM().getIDMedico() << "|"
+            << cita.getF() << "|"
+            << cita.getH() << "|"
+            << cita.getMo() << "|"
+            << (cita.esUrgente() ? "1" : "0") << "\n";
+    }
+
+    archivo.close();
+    std::cout << "Los datos de las citas han sido guardados correctamente.\n";
+}
+
 void menuCitas() {
     int opcion;
     do {
-        std::cout << "\nMenu de Citas\n1. Agregar Cita\n2. Eliminar Cita\n3. Modificar Cita\n4. Mostrar Citas por Urgencia\n5. Volver\nSeleccione una opcion: ";
+        std::cout << "\nMenu de Citas\n1. Agregar Cita\n2. Eliminar Cita\n3. Modificar Cita\n4. Mostrar Citas por Urgencia\n5. Listar citas\n6. Volver\nSeleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
         case 1:
             agregarCita();
+            guardarCitas();
             break;
         case 2:
             eliminarCita();
+            guardarCitas();
             break;
         case 3:
             modificarCita();
+            guardarCitas();
             break;
         case 4:
             mostrarXUrgencia();
             break;
         case 5:
+            listarCitas();
+            break;
+        case 6:
             return;
         default:
             std::cout << "Opcion no valida.\n";
         }
-    } while (opcion != 5);
+    } while (opcion != 6);
 }
 
 //---------------------------------------------
@@ -573,11 +750,13 @@ void menuCitas() {
 void cargarDatos() {
     cargarPacientes();
     cargarMedicos();
+    cargarCitas();
 }
 
 void guardarDatos() {
     guardarMedicos();
     guardarPacientes();
+    guardarCitas();
 }
 
 bool validarFecha(const std::string& fechaNacimiento) {
@@ -630,7 +809,7 @@ int main() {
 
     int opcion;
     do {
-        std::cout << "\nMenu Principal\n1. Menu de Pacientes\n2. Menu de Medicos\n3. Menu de Citas\n4. Eliminar Datos\n5. Salir\nSeleccione una opcion: ";
+        std::cout << "\nMenu Principal\n1. Menu de Pacientes\n2. Menu de Medicos\n3. Menu de Citas\n4. Eliminar todos los datos\n5. Salir\nSeleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
@@ -644,6 +823,7 @@ int main() {
             break;
         case 3:
             menuCitas();
+            guardarCitas();
             break;
         case 4:
             eliminarDatos();
