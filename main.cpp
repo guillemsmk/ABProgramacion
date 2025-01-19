@@ -23,15 +23,11 @@ int contadorMedico = 1;
 std::vector<Cita> listaCitas;
 int contadorCita = 1;
 
-const std::string rutaP = "pacientes.txt";
-const std::string rutaM = "medicos.txt";
-const std::string rutaC = "citas.txt";
-
 void eliminarDatos() {
     listaPacientes.clear();
     listaMedicos.clear();
 
-    std::ofstream archivoPacientes(rutaP, std::ofstream::trunc);
+    std::ofstream archivoPacientes("pacientes.txt", std::ofstream::trunc);
     if (!archivoPacientes.is_open()) {
         std::cerr << "Error al eliminar los datos de pacientes.\n";
     }
@@ -40,7 +36,7 @@ void eliminarDatos() {
         std::cout << "Datos de pacientes eliminados correctamente.\n";
     }
 
-    std::ofstream archivoMedicos(rutaM, std::ofstream::trunc);
+    std::ofstream archivoMedicos("medicos.txt", std::ofstream::trunc);
     if (!archivoMedicos.is_open()) {
         std::cerr << "Error al eliminar los datos de medicos.\n";
     }
@@ -198,7 +194,7 @@ void listarPacientes() {
 }
 
 void cargarPacientes() {
-    std::ifstream archivo(rutaP);
+    std::ifstream archivo("pacientes.txt");
     if (!archivo.is_open()) {
         std::cout << "No se encontro el archivo, creando uno nuevo...\n";
         return;
@@ -230,7 +226,7 @@ void cargarPacientes() {
 }
 
 void guardarPacientes() {
-    std::ofstream archivo(rutaP);
+    std::ofstream archivo("pacientes.txt");
     if (!archivo.is_open()) {
         std::cout << "Error al abrir el archivo de pacientes.\n";
         return;
@@ -434,7 +430,7 @@ void listarMedicos() {
 }
 
 void cargarMedicos() {
-    std::ifstream archivo(rutaM);
+    std::ifstream archivo("medicos.txt");
     if (!archivo.is_open()) {
         std::cout << "No se encontro el archivo, creando uno nuevo...\n";
         return;
@@ -465,7 +461,7 @@ void cargarMedicos() {
 }
 
 void guardarMedicos() {
-    std::ofstream archivo(rutaM);
+    std::ofstream archivo("medicos.txt");
     if (!archivo.is_open()) {
         std::cout << "Error al abrir el archivo de medicos.\n";
         return;
@@ -633,7 +629,7 @@ void listarCitas() {
 }
 
 void cargarCitas() {
-    std::ifstream archivo(rutaC);
+    std::ifstream archivo("citas.txt");
     if (!archivo) {
         std::cerr << "No se encontro el archivo, creando uno nuevo...\n";
         return;
@@ -692,7 +688,7 @@ void cargarCitas() {
 }
 
 void guardarCitas() {
-    std::ofstream archivo(rutaC);
+    std::ofstream archivo("citas.txt");
     if (!archivo) {
         std::cerr << "Error al abrir el archivo de medicos.\n";
             return;
