@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 #include "paciente.h"
 #include "medico.h"
 
@@ -18,6 +19,7 @@ private:
 
 public:
 	Cita(int IDCita, const Paciente& paciente, const Medico& medico, const std::string fechaCita, const std::string hora, std::string motivo, bool urgencia);
+	Cita() = default;
 
 	int getIDCita() const;
 	Paciente getP() const;
@@ -30,6 +32,17 @@ public:
 	void modificarCita(const std::string& nuevaFecha, const std::string& nuevaHora, const std::string nuevoMotivo, bool nuevaUrgencia);
 	void mostrarInformacion() const;
 
+	void agregarCita();
+	void modificarCita();
+	void eliminarCita();
+	void mostrarXUrgencia();
+	void listarCitas();
+	void cargarCitas();
+	void guardarCitas();
+
 }; 
+
+extern int contadorCita;
+extern std::vector<Cita> listaCitas;
 
 #endif

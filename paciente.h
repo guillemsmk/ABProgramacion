@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 class Paciente {
 private: 
@@ -16,6 +17,7 @@ private:
 
 public:
 	Paciente(int IDPaciente, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& fechaNacimiento, const std::string& diagnostico);
+	Paciente() = default;
 
 	int getIDPaciente() const;
 	std::string getNombre() const;
@@ -29,6 +31,19 @@ public:
 	void darDeAlta();
 	void darDeBaja();
 	void mostrarInformacion() const;
+
+	void registrarPaciente();
+	void modificarPaciente();
+	void eliminarPaciente();
+	void altaBajaPaciente();
+	void buscarPaciente();
+	void listarPacientes();
+	void cargarPacientes();
+	void guardarPacientes();
+
 };
+
+extern int contadorPaciente;
+extern std::vector<Paciente> listaPacientes;
 
 #endif
