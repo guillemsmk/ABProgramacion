@@ -38,7 +38,7 @@ void Paciente::mostrarInformacion() const {
 std::vector<Paciente> listaPacientes;
 int contadorPaciente = 1;
 
-void registrarPaciente() {
+void Paciente::registrarPaciente() {
     std::string nombre, direccion, genero, fechaNacimiento, diagnostico;
 
     do {
@@ -72,7 +72,7 @@ void registrarPaciente() {
     std::cout << "Paciente registrado con exito.\n";
 }
 
-void modificarPaciente() {
+void Paciente::modificarPaciente() {
     int ID;
     std::string nuevoNombre, nuevaDireccion, nuevoDiagnostico;
 
@@ -107,7 +107,7 @@ void modificarPaciente() {
     }
 }
 
-void eliminarPaciente() {
+void Paciente::eliminarPaciente() {
     int IDPaciente;
     std::cout << "Ingrese el ID del paciente a eliminar: ";
     std::cin >> IDPaciente;
@@ -126,7 +126,7 @@ void eliminarPaciente() {
     }
 }
 
-void altaBajaPaciente() {
+void Paciente::altaBajaPaciente() {
     int ID;
     int opcion;
 
@@ -155,7 +155,7 @@ void altaBajaPaciente() {
     std::cout << "Paciente no encontrado.\n";
 }
 
-void buscarPaciente() {
+void Paciente::buscarPaciente() {
     int ID;
 
     std::cout << "Ingrese el ID del paciente a buscar: ";
@@ -170,7 +170,7 @@ void buscarPaciente() {
     std::cout << "Paciente no encontrado.\n";
 }
 
-void listarPacientes() {
+void Paciente::listarPacientes() {
     if (listaPacientes.empty()) {
         std::cout << "No hay pacientes registrados.\n";
         return;
@@ -183,7 +183,7 @@ void listarPacientes() {
     }
 }
 
-void cargarPacientes() {
+void Paciente::cargarPacientes() {
     std::ifstream archivo("pacientes.txt");
     if (!archivo.is_open()) {
         std::cout << "No se encontro el archivo, creando uno nuevo...\n";
@@ -215,7 +215,7 @@ void cargarPacientes() {
     std::cout << "Datos de los pacientes cargados correctamente.\n";
 }
 
-void guardarPacientes() {
+void Paciente::guardarPacientes() {
     std::ofstream archivo("pacientes.txt");
     if (!archivo.is_open()) {
         std::cout << "Error al abrir el archivo de pacientes.\n";

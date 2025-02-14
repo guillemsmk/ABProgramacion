@@ -1,16 +1,10 @@
 #include <iostream>
-#include <vector>
-#include <regex>
 #include <fstream>
 #include <sstream>
 #include "paciente.h"
 #include "medico.h"
 #include "citas.h"
 
-void menuPacientes();
-void menuMedicos();
-void menuCitas();
-void cargarDatos();
 void guardarDatos();
 
 void eliminarDatos() {
@@ -56,26 +50,55 @@ void menuPacientes() {
 
         switch (opcion) {
         case 1:
-            registrarPaciente();
-            guardarPacientes();
-            break;
+        {
+            Paciente paciente;
+            paciente.registrarPaciente();
+            listaPacientes.push_back(paciente);
+            guardarDatos();
+        }
+        break;
         case 2:
-            modificarPaciente();
-            guardarPacientes();
+            if (!listaPacientes.empty()) {
+                listaPacientes.back().modificarPaciente();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay pacientes registrados.\n";
+            }
             break;
         case 3:
-            eliminarPaciente();
-            guardarPacientes();
+            if (!listaPacientes.empty()) {
+                listaPacientes.back().eliminarPaciente();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay pacientes registrados.\n";
+            }
             break;
         case 4:
-            altaBajaPaciente();
-            guardarPacientes();
+            if (!listaPacientes.empty()) {
+                listaPacientes.back().altaBajaPaciente();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay pacientes registrados.\n";
+            }
             break;
         case 5:
-            buscarPaciente();
+            if (!listaPacientes.empty()) {
+                listaPacientes.back().buscarPaciente();
+            }
+            else {
+                std::cout << "No hay pacientes registrados.\n";
+            }
             break;
         case 6:
-            listarPacientes();
+            if (!listaPacientes.empty()) {
+                listaPacientes.back().listarPacientes();
+            }
+            else {
+                std::cout << "No hay pacientes registrados.\n";
+            }
             break;
         case 7:
             return;
@@ -95,26 +118,55 @@ void menuMedicos() {
 
         switch (opcion) {
         case 1:
-            registrarMedico();
-            guardarMedicos();
+        {
+            Medico medico;
+            medico.registrarMedico();
+            listaMedicos.push_back(medico);
+            guardarDatos();
+        }
             break;
         case 2:
-            modificarMedico();
-            guardarMedicos();
+            if (!listaMedicos.empty()) {
+                listaMedicos.back().modificarMedico();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay medicos registrados.\n";
+            }
             break;
         case 3:
-            eliminarMedico();
-            guardarMedicos();
+            if (!listaMedicos.empty()) {
+                listaMedicos.back().eliminarMedico();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay medicos registrados.\n";
+            }
             break;
         case 4:
-            altaBajaMedico();
-            guardarMedicos();
+            if (!listaMedicos.empty()) {
+                listaMedicos.back().altaBajaMedico();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay medicos registrados.\n";
+            }
             break;
         case 5:
-            buscarMedico();
+            if (!listaMedicos.empty()) {
+                listaMedicos.back().buscarMedico();
+            }
+            else {
+                std::cout << "No hay medicos registrados.\n";
+            }
             break;
         case 6:
-            listarMedicos();
+            if (!listaMedicos.empty()) {
+                listaMedicos.back().listarMedicos();
+            }
+            else {
+                std::cout << "No hay medicos registrados.\n";
+            }
             break;
         case 7:
             return;
@@ -134,22 +186,46 @@ void menuCitas() {
 
         switch (opcion) {
         case 1:
-            agregarCita();
-            guardarCitas();
+        {
+            Cita cita;
+            cita.agregarCita();
+            listaCitas.push_back(cita);
+            guardarDatos();
+        }
             break;
         case 2:
-            eliminarCita();
-            guardarCitas();
+            if (!listaCitas.empty()) {
+                listaCitas.back().eliminarCita();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay citas registradas.\n";
+            }
             break;
         case 3:
-            modificarCita();
-            guardarCitas();
+            if (!listaCitas.empty()) {
+                listaCitas.back().modificarCita();
+                guardarDatos();
+            }
+            else {
+                std::cout << "No hay citas registradas.\n";
+            }
             break;
         case 4:
-            mostrarXUrgencia();
+            if (!listaCitas.empty()) {
+                listaCitas.back().mostrarXUrgencia();
+            }
+            else {
+                std::cout << "No hay citas registradas.\n";
+            }
             break;
         case 5:
-            listarCitas();
+            if (!listaCitas.empty()) {
+                listaCitas.back().listarCitas();
+            }
+            else {
+                std::cout << "No hay citas registradas.\n";
+            }
             break;
         case 6:
             return;
@@ -162,15 +238,27 @@ void menuCitas() {
 //---------------------------------------------
 
 void cargarDatos() {
-    cargarPacientes();
-    cargarMedicos();
-    cargarCitas();
+    for (auto& paciente : listaPacientes) {
+        paciente.cargarPacientes();
+    }
+    for (auto& medico : listaMedicos) {
+        medico.cargarMedicos();
+    }
+    for (auto& cita : listaCitas) {
+        cita.cargarCitas();
+    }
 }
 
 void guardarDatos() {
-    guardarMedicos();
-    guardarPacientes();
-    guardarCitas();
+    for (auto& medico : listaMedicos) {
+        medico.guardarMedicos();
+    }
+    for (auto& paciente : listaPacientes) {
+        paciente.guardarPacientes();
+    }
+    for (auto& cita : listaCitas) {
+        cita.guardarCitas();
+    }
 }
 
 //---------------------------------------------
@@ -186,15 +274,12 @@ int main() {
         switch (opcion) {
         case 1:
             menuPacientes();
-            guardarPacientes();
             break;
         case 2:
             menuMedicos();
-            guardarMedicos();
             break;
         case 3:
             menuCitas();
-            guardarCitas();
             break;
         case 4:
             eliminarDatos();

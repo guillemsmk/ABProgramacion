@@ -44,3 +44,8 @@ bool validarVacio(const std::string& entrada, const std::string& campo) {
     }
     return true;
 }
+
+bool validarHora(const std::string& hora) {
+    std::regex formatoHora(R"(^([01]\d|2[0-3]):([0-5]\d)$)");
+    return std::regex_match(hora, formatoHora);
+}

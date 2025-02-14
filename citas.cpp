@@ -39,7 +39,7 @@ void Cita::mostrarInformacion() const {
 std::vector<Cita> listaCitas;
 int contadorCita = 1;
 
-void agregarCita() {
+void Cita::agregarCita() {
     int IDPaciente, IDMedico;
     std::string fechaCita, hora, motivo;
     bool urgencia;
@@ -72,11 +72,19 @@ void agregarCita() {
 
     std::cout << "Ingrese fecha (dd-mm-yyyy) ";
     std::cin >> fechaCita;
+
+    do {
     std::cout << "Ingrese hora (hh:mm): ";
     std::cin >> hora;
+    if (!validarHora(hora)) {
+        std::cout << "Hora invalida.\n";
+    }
+	} while (!validarHora(hora));
+
     std::cout << "Ingrese motivo: ";
     std::cin.ignore();
     std::getline(std::cin, motivo);
+
     std::cout << "Cita urgente? (1 Si, 0 No): ";
     std::cin >> urgencia;
 
@@ -84,7 +92,7 @@ void agregarCita() {
     std::cout << "Cita agregada.\n";
 }
 
-void modificarCita() {
+void Cita::modificarCita() {
     int IDCita;
     std::cout << "Ingrese ID de la cita a modificar: ";
     std::cin >> IDCita;
@@ -112,7 +120,7 @@ void modificarCita() {
     std::cout << "Cita no encontrada.\n";
 }
 
-void eliminarCita() {
+void Cita::eliminarCita() {
     int IDCita;
     std::cout << "Ingrese ID de la cita a eliminar: ";
     std::cin >> IDCita;
@@ -127,7 +135,7 @@ void eliminarCita() {
     std::cout << "Cita no encontrada.\n";
 }
 
-void mostrarXUrgencia() {
+void Cita::mostrarXUrgencia() {
     std::cout << "Citas urgentes: ";
     for (const auto& cita : listaCitas) {
         if (cita.esUrgente()) {
@@ -136,7 +144,7 @@ void mostrarXUrgencia() {
     }
 }
 
-void listarCitas() {
+void Cita::listarCitas() {
     if (listaCitas.empty()) {
         std::cout << "No hay citas registradas.\n";
         return;
@@ -149,7 +157,7 @@ void listarCitas() {
     }
 }
 
-void cargarCitas() {
+void Cita::cargarCitas() {
     std::ifstream archivo("citas.txt");
     if (!archivo) {
         std::cerr << "No se encontro el archivo, creando uno nuevo...\n";
@@ -208,7 +216,7 @@ void cargarCitas() {
     std::cout << "Datos de las citas cargados correctamente.\n";
 }
 
-void guardarCitas() {
+void Cita::guardarCitas() {
     std::ofstream archivo("citas.txt");
     if (!archivo) {
         std::cerr << "Error al abrir el archivo de medicos.\n";
