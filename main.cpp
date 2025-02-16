@@ -4,6 +4,7 @@
 #include "paciente.h"
 #include "medico.h"
 #include "citas.h"
+#include "reportes.h"
 
 void guardarDatos();
 
@@ -268,7 +269,7 @@ int main() {
 
     int opcion;
     do {
-        std::cout << "\nMenu Principal\n1. Menu de Pacientes\n2. Menu de Medicos\n3. Menu de Citas\n4. Eliminar todos los datos\n5. Salir\nSeleccione una opcion: ";
+        std::cout << "\nMenu Principal\n1. Menu de Pacientes\n2. Menu de Medicos\n3. Menu de Citas\n4. Reporte Citas Pendientes Medico\n5. Eliminar todos los datos\n6. Salir\nSeleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
@@ -282,9 +283,12 @@ int main() {
             menuCitas();
             break;
         case 4:
-            eliminarDatos();
+            reporteCitasPendientes();
             break;
-        case 5:
+        case 5: 
+			eliminarDatos();
+            break;
+        case 6:
             guardarDatos();
             std::cout << "Saliendo del programa...\n";
             return 0;
@@ -292,7 +296,7 @@ int main() {
             std::cout << "Intente de nuevo.\n";
             break;
         }
-    } while (opcion != 5);
+    } while (opcion != 6);
 
     return 0;
 }
