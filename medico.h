@@ -16,7 +16,6 @@ private:
 
 public:
     Medico(int IDMedico, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& especialidad);
-    Medico() = default;
 
     int getIDMedico() const;
     std::string getNombre() const;
@@ -30,18 +29,14 @@ public:
     void darDeBaja();
     void mostrarInformacion() const;
 
-	void registrarMedico();
-	void modificarMedico();
-	void eliminarMedico();
-	void altaBajaMedico();
-	void buscarMedico();
-    void listarMedicos();
-	void cargarMedicos();
-	void guardarMedicos();
-
+    static void registrarMedico(std::vector<Medico>& listaMedicos, int& contadorMedico);
+    static void modificarMedico(std::vector<Medico>& listaMedicos);
+    static void eliminarMedico(std::vector<Medico>& listaMedicos);
+    static void altaBajaMedico(std::vector<Medico>& listaMedicos);
+    static void buscarMedico(const std::vector<Medico>& listaMedicos);
+    static void listarMedicos(const std::vector<Medico>& listaMedicos);
+    static void cargarMedicos(std::vector<Medico>& listaMedicos, int& contadorMedico);
+    static void guardarMedicos(const std::vector<Medico>& listaMedicos);
 };
-
-extern int contadorMedico;
-extern std::vector<Medico> listaMedicos;
 
 #endif

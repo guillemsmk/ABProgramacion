@@ -6,7 +6,7 @@
 #include <vector>
 
 class Paciente {
-private: 
+private:
 	int IDPaciente;
 	std::string nombre;
 	std::string direccion;
@@ -17,7 +17,6 @@ private:
 
 public:
 	Paciente(int IDPaciente, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& fechaNacimiento, const std::string& diagnostico);
-	Paciente() = default;
 
 	int getIDPaciente() const;
 	std::string getNombre() const;
@@ -32,18 +31,14 @@ public:
 	void darDeBaja();
 	void mostrarInformacion() const;
 
-	void registrarPaciente();
-	void modificarPaciente();
-	void eliminarPaciente();
-	void altaBajaPaciente();
-	void buscarPaciente();
-	void listarPacientes();
-	void cargarPacientes();
-	void guardarPacientes();
-
+	static void registrarPaciente(std::vector<Paciente>& listaPacientes, int& contadorPaciente);
+	static void modificarPaciente(std::vector<Paciente>& listaPacientes);
+	static void eliminarPaciente(std::vector<Paciente>& listaPacientes);
+	static void altaBajaPaciente(std::vector<Paciente>& listaPacientes);
+	static void buscarPaciente(const std::vector<Paciente>& listaPacientes);
+	static void listarPacientes(const std::vector<Paciente>& listaPacientes);
+	static void cargarPacientes(std::vector<Paciente>& listaPacientes, int& contadorPaciente);
+	static void guardarPacientes(const std::vector<Paciente>& listaPacientes);
 };
-
-extern int contadorPaciente;
-extern std::vector<Paciente> listaPacientes;
 
 #endif

@@ -6,7 +6,8 @@
 #include <vector>
 
 Paciente::Paciente(int ID, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& fechaNacimiento, const std::string& diagnostico)
-    : IDPaciente(ID), nombre(nombre), direccion(direccion), genero(genero), fechaNacimiento(fechaNacimiento), diagnostico(diagnostico), estado(true) {}
+    : IDPaciente(ID), nombre(nombre), direccion(direccion), genero(genero), fechaNacimiento(fechaNacimiento), diagnostico(diagnostico), estado(true) {
+}
 
 int Paciente::getIDPaciente() const { return IDPaciente; }
 std::string Paciente::getNombre() const { return nombre; }
@@ -35,10 +36,7 @@ void Paciente::mostrarInformacion() const {
     std::cout << "Estado: " << getEstado() << "\n";
 }
 
-std::vector<Paciente> listaPacientes;
-int contadorPaciente = 1;
-
-void Paciente::registrarPaciente() {
+void Paciente::registrarPaciente(std::vector<Paciente>& listaPacientes, int& contadorPaciente) {
     std::string nombre, direccion, genero, fechaNacimiento, diagnostico;
 
     do {
@@ -72,10 +70,9 @@ void Paciente::registrarPaciente() {
     std::cout << "Paciente registrado con exito.\n";
 }
 
-void Paciente::modificarPaciente() {
+void Paciente::modificarPaciente(std::vector<Paciente>& listaPacientes) {
     int ID;
     std::string nuevoNombre, nuevaDireccion, nuevoDiagnostico;
-
     std::cout << "Ingrese el ID del paciente a modificar: ";
     std::cin >> ID;
 
@@ -94,8 +91,11 @@ void Paciente::modificarPaciente() {
                 std::cout << "Ingrese nueva direccion: ";
                 std::getline(std::cin, nuevaDireccion);
             } while (!validarVacio(nuevaDireccion, "Direccion"));
-            std::cout << "Ingrese nuevo diagnostico: ";
-            std::getline(std::cin, nuevoDiagnostico);
+
+            do {
+                std::cout << "Ingrese nuevo diagnostico: ";
+                std::getline(std::cin, nuevoDiagnostico);
+            } while (!validarVacio(nuevoDiagnostico, "Diagnostico"));
 
             paciente.modificarDatos(nuevoNombre, nuevaDireccion, nuevoDiagnostico);
             std::cout << "Paciente modificado con exito.\n";
@@ -107,7 +107,7 @@ void Paciente::modificarPaciente() {
     }
 }
 
-void Paciente::eliminarPaciente() {
+void Paciente::eliminarPaciente(std::vector<Paciente>& listaPacientes) {
     int IDPaciente;
     std::cout << "Ingrese el ID del paciente a eliminar: ";
     std::cin >> IDPaciente;
@@ -126,7 +126,7 @@ void Paciente::eliminarPaciente() {
     }
 }
 
-void Paciente::altaBajaPaciente() {
+void Paciente::altaBajaPaciente(std::vector<Paciente>& listaPacientes) {
     int ID;
     int opcion;
 
@@ -155,7 +155,7 @@ void Paciente::altaBajaPaciente() {
     std::cout << "Paciente no encontrado.\n";
 }
 
-void Paciente::buscarPaciente() {
+void Paciente::buscarPaciente(const std::vector<Paciente>& listaPacientes) {
     int ID;
 
     std::cout << "Ingrese el ID del paciente a buscar: ";
@@ -170,7 +170,7 @@ void Paciente::buscarPaciente() {
     std::cout << "Paciente no encontrado.\n";
 }
 
-void Paciente::listarPacientes() {
+void Paciente::listarPacientes(const std::vector<Paciente>& listaPacientes) {
     if (listaPacientes.empty()) {
         std::cout << "No hay pacientes registrados.\n";
         return;
@@ -183,7 +183,7 @@ void Paciente::listarPacientes() {
     }
 }
 
-void Paciente::cargarPacientes() {
+void Paciente::cargarPacientes(std::vector<Paciente>& listaPacientes, int& contadorPaciente) {
     std::ifstream archivo("pacientes.txt");
     if (!archivo.is_open()) {
         std::cout << "No se encontro el archivo, creando uno nuevo...\n";
@@ -192,6 +192,7 @@ void Paciente::cargarPacientes() {
 
     listaPacientes.clear();
     std::string linea;
+    int maxID = 0;
     while (std::getline(archivo, linea)) {
         std::stringstream ss(linea);
         std::string IDPaciente, nombre, direccion, genero, fechaNacimiento, diagnostico, estado;
@@ -209,13 +210,15 @@ void Paciente::cargarPacientes() {
         if (!estadoBool) {
             listaPacientes.back().darDeBaja();
         }
+        maxID = std::max(maxID, std::stoi(IDPaciente));
     }
 
+    contadorPaciente = maxID + 1;
     archivo.close();
     std::cout << "Datos de los pacientes cargados correctamente.\n";
 }
 
-void Paciente::guardarPacientes() {
+void Paciente::guardarPacientes(const std::vector<Paciente>& listaPacientes) {
     std::ofstream archivo("pacientes.txt");
     if (!archivo.is_open()) {
         std::cout << "Error al abrir el archivo de pacientes.\n";

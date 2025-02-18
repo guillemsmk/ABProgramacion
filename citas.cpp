@@ -4,11 +4,11 @@
 #include <ctime>
 #include <fstream>
 #include <sstream>
-#include <vector>
-#include <regex>
+
 
 Cita::Cita(int IDCita, const Paciente& paciente, const Medico& medico, const std::string fechaCita, const std::string hora, std::string motivo, bool urgencia)
-	: IDCita(IDCita), paciente(paciente), medico(medico), fechaCita(fechaCita), hora(hora), motivo(motivo), urgencia(urgencia) {}
+    : IDCita(IDCita), paciente(paciente), medico(medico), fechaCita(fechaCita), hora(hora), motivo(motivo), urgencia(urgencia) {
+}
 
 
 int Cita::getIDCita() const { return IDCita; }
@@ -20,26 +20,23 @@ std::string Cita::getMo() const { return motivo; }
 bool Cita::esUrgente() const { return urgencia; }
 
 void Cita::modificarCita(const std::string& nuevaFecha, const std::string& nuevaHora, const std::string nuevoMotivo, bool nuevaUrgencia) {
-	fechaCita = nuevaFecha;
-	hora = nuevaHora;
-	motivo = nuevoMotivo;
-	urgencia = nuevaUrgencia;
+    fechaCita = nuevaFecha;
+    hora = nuevaHora;
+    motivo = nuevoMotivo;
+    urgencia = nuevaUrgencia;
 }
 
 void Cita::mostrarInformacion() const {
-	std::cout << "ID Cita: " << IDCita << "\n"
-		<< "Paciente: " << paciente.getNombre() << " (ID: " << paciente.getIDPaciente() << ")\n"
-		<< "Medico: " << medico.getNombre() << " (ID: " << medico.getIDMedico() << ")\n"
-		<< "Fecha: " << fechaCita << "\n"
-		<< "Hora: " << hora << "\n"
-		<< "Motivo: " << motivo << "\n"
-		<< "Urgencia: " << (urgencia ? "Urgente" : "No urgente") << "\n";
+    std::cout << "ID Cita: " << IDCita << "\n"
+        << "Paciente: " << paciente.getNombre() << " (ID: " << paciente.getIDPaciente() << ")\n"
+        << "Medico: " << medico.getNombre() << " (ID: " << medico.getIDMedico() << ")\n"
+        << "Fecha: " << fechaCita << "\n"
+        << "Hora: " << hora << "\n"
+        << "Motivo: " << motivo << "\n"
+        << "Urgencia: " << (urgencia ? "Urgente" : "No urgente") << "\n";
 }
 
-std::vector<Cita> listaCitas;
-int contadorCita = 1;
-
-void Cita::agregarCita() {
+void Cita::agregarCita(std::vector<Cita>& listaCitas, int& contadorCita, const std::vector<Paciente>& listaPacientes, const std::vector<Medico>& listaMedicos) {
     int IDPaciente, IDMedico;
     std::string fechaCita, hora, motivo;
     bool urgencia;
@@ -49,16 +46,16 @@ void Cita::agregarCita() {
     std::cout << "Ingrese ID del medico: ";
     std::cin >> IDMedico;
 
-    Paciente* paciente = nullptr;
-    Medico* medico = nullptr;
+    const Paciente* paciente = nullptr;
+    const Medico* medico = nullptr;
 
-    for (auto& p : listaPacientes) {
+    for (const auto& p : listaPacientes) {
         if (p.getIDPaciente() == IDPaciente) {
             paciente = &p;
             break;
         }
     }
-    for (auto& m : listaMedicos) {
+    for (const auto& m : listaMedicos) {
         if (m.getIDMedico() == IDMedico) {
             medico = &m;
             break;
@@ -70,20 +67,21 @@ void Cita::agregarCita() {
         return;
     }
 
-    std::cout << "Ingrese fecha (dd-mm-yyyy) ";
-    std::cin >> fechaCita;
+    do {
+        std::cout << "Ingrese fecha (dd-mm-yyyy): ";
+        std::cin >> fechaCita;
+    } while (!validarVacio(fechaCita, "Fecha") || !validarFecha(fechaCita));
 
     do {
-    std::cout << "Ingrese hora (hh:mm): ";
-    std::cin >> hora;
-    if (!validarHora(hora)) {
-        std::cout << "Hora invalida.\n";
-    }
-	} while (!validarHora(hora));
+        std::cout << "Ingrese hora (hh:mm): ";
+        std::cin >> hora;
+    } while (!validarVacio(hora, "Hora") || !validarHora(hora));
 
-    std::cout << "Ingrese motivo: ";
-    std::cin.ignore();
-    std::getline(std::cin, motivo);
+    do {
+        std::cout << "Ingrese motivo: ";
+        std::cin.ignore();
+        std::getline(std::cin, motivo);
+    } while (!validarVacio(motivo, "Motivo"));
 
     std::cout << "Cita urgente? (1 Si, 0 No): ";
     std::cin >> urgencia;
@@ -92,7 +90,7 @@ void Cita::agregarCita() {
     std::cout << "Cita agregada.\n";
 }
 
-void Cita::modificarCita() {
+void Cita::modificarCita(std::vector<Cita>& listaCitas) {
     int IDCita;
     std::cout << "Ingrese ID de la cita a modificar: ";
     std::cin >> IDCita;
@@ -102,13 +100,22 @@ void Cita::modificarCita() {
             std::string nuevaFecha, nuevaHora, nuevoMotivo;
             bool nuevaUrgencia;
 
-            std::cout << "Ingrese nueva fecha (dd-mm-yyyy) ";
-            std::cin >> nuevaFecha;
-            std::cout << "Ingrese hora (hh:mm): ";
-            std::cin >> nuevaHora;
-            std::cout << "Ingrese motivo: ";
-            std::cin.ignore();
-            std::getline(std::cin, nuevoMotivo);
+            do {
+                std::cout << "Ingrese nueva fecha (dd-mm-yyyy): ";
+                std::cin >> nuevaFecha;
+            } while (!validarVacio(nuevaFecha, "Fecha") || !validarFecha(nuevaFecha));
+
+            do {
+                std::cout << "Ingrese hora (hh:mm): ";
+                std::cin >> nuevaHora;
+            } while (!validarVacio(nuevaHora, "Hora") || !validarHora(nuevaHora));
+
+            do {
+                std::cout << "Ingrese motivo: ";
+                std::cin.ignore();
+                std::getline(std::cin, nuevoMotivo);
+            } while (!validarVacio(nuevoMotivo, "Motivo"));
+
             std::cout << "Cita urgente? (1 Si, 0 No): ";
             std::cin >> nuevaUrgencia;
 
@@ -120,23 +127,27 @@ void Cita::modificarCita() {
     std::cout << "Cita no encontrada.\n";
 }
 
-void Cita::eliminarCita() {
+void Cita::eliminarCita(std::vector<Cita>& listaCitas) {
     int IDCita;
     std::cout << "Ingrese ID de la cita a eliminar: ";
     std::cin >> IDCita;
 
-    for (auto it = listaCitas.begin(); it != listaCitas.end(); ++it) {
-        if (it->getIDCita() == IDCita) {
-            listaCitas.erase(it);
-            std::cout << "Cita eliminada.\n";
-            return;
-        }
+    auto it = std::find_if(listaCitas.begin(), listaCitas.end(),
+        [IDCita](const Cita& c) {
+            return c.getIDCita() == IDCita;
+        });
+
+    if (it != listaCitas.end()) {
+        listaCitas.erase(it);
+        std::cout << "Cita eliminada.\n";
     }
-    std::cout << "Cita no encontrada.\n";
+    else {
+        std::cout << "Cita no encontrada.\n";
+    }
 }
 
-void Cita::mostrarXUrgencia() {
-    std::cout << "Citas urgentes: ";
+void Cita::mostrarXUrgencia(const std::vector<Cita>& listaCitas) {
+    std::cout << "Citas urgentes: \n";
     for (const auto& cita : listaCitas) {
         if (cita.esUrgente()) {
             cita.mostrarInformacion();
@@ -144,7 +155,7 @@ void Cita::mostrarXUrgencia() {
     }
 }
 
-void Cita::listarCitas() {
+void Cita::listarCitas(const std::vector<Cita>& listaCitas) {
     if (listaCitas.empty()) {
         std::cout << "No hay citas registradas.\n";
         return;
@@ -157,9 +168,9 @@ void Cita::listarCitas() {
     }
 }
 
-void Cita::cargarCitas() {
+void Cita::cargarCitas(std::vector<Cita>& listaCitas, int& contadorCita, const std::vector<Paciente>& listaPacientes, const std::vector<Medico>& listaMedicos) {
     std::ifstream archivo("citas.txt");
-    if (!archivo) {
+    if (!archivo.is_open()) {
         std::cerr << "No se encontro el archivo, creando uno nuevo...\n";
         return;
     }
@@ -185,17 +196,17 @@ void Cita::cargarCitas() {
         int IDMedicoInt = std::stoi(IDMedico);
         bool urgenciaBool = (urgencia == "1");
 
-        Paciente* paciente = nullptr;
-        Medico* medico = nullptr;
+        const Paciente* paciente = nullptr;
+        const Medico* medico = nullptr;
 
-        for (auto& p : listaPacientes) {
+        for (const auto& p : listaPacientes) {
             if (p.getIDPaciente() == IDPacienteInt) {
                 paciente = &p;
                 break;
             }
         }
 
-        for (auto& m : listaMedicos) {
+        for (const auto& m : listaMedicos) {
             if (m.getIDMedico() == IDMedicoInt) {
                 medico = &m;
                 break;
@@ -216,10 +227,10 @@ void Cita::cargarCitas() {
     std::cout << "Datos de las citas cargados correctamente.\n";
 }
 
-void Cita::guardarCitas() {
+void Cita::guardarCitas(const std::vector<Cita>& listaCitas) {
     std::ofstream archivo("citas.txt");
-    if (!archivo) {
-        std::cerr << "Error al abrir el archivo de medicos.\n";
+    if (!archivo.is_open()) {
+        std::cerr << "Error al abrir el archivo de citas.\n";
         return;
     }
 

@@ -6,7 +6,8 @@
 #include <vector>
 
 Medico::Medico(int ID, const std::string& nombre, const std::string& direccion, const std::string& genero, const std::string& especialidad)
-    : IDMedico(ID), nombre(nombre), direccion(direccion), genero(genero), especialidad(especialidad), estado(true) {}
+    : IDMedico(ID), nombre(nombre), direccion(direccion), genero(genero), especialidad(especialidad), estado(true) {
+}
 
 int Medico::getIDMedico() const { return IDMedico; }
 std::string Medico::getNombre() const { return nombre; }
@@ -33,10 +34,7 @@ void Medico::mostrarInformacion() const {
     std::cout << "Estado: " << getEstado() << "\n";
 }
 
-std::vector<Medico> listaMedicos;
-int contadorMedico = 1;
-
-void Medico::registrarMedico() {
+void Medico::registrarMedico(std::vector<Medico>& listaMedicos, int& contadorMedico) {
     std::string nombre, direccion, genero, especialidad;
 
     do {
@@ -65,7 +63,7 @@ void Medico::registrarMedico() {
     std::cout << "Medico registrado con exito.\n";
 }
 
-void Medico::modificarMedico() {
+void Medico::modificarMedico(std::vector<Medico>& listaMedicos) {
     int ID;
     std::string nuevoNombre, nuevaDireccion, nuevaEspecialidad;
 
@@ -105,7 +103,7 @@ void Medico::modificarMedico() {
     }
 }
 
-void Medico::eliminarMedico() {
+void Medico::eliminarMedico(std::vector<Medico>& listaMedicos) {
     int IDMedico;
     std::cout << "Ingrese el ID del medico a eliminar: ";
     std::cin >> IDMedico;
@@ -124,7 +122,7 @@ void Medico::eliminarMedico() {
     }
 }
 
-void Medico::altaBajaMedico() {
+void Medico::altaBajaMedico(std::vector<Medico>& listaMedicos) {
     int ID;
     int opcion;
 
@@ -153,7 +151,7 @@ void Medico::altaBajaMedico() {
     std::cout << "Medico no encontrado.\n";
 }
 
-void Medico::buscarMedico() {
+void Medico::buscarMedico(const std::vector<Medico>& listaMedicos) {
     int ID;
 
     std::cout << "Ingrese el ID del medico a buscar: ";
@@ -168,7 +166,7 @@ void Medico::buscarMedico() {
     std::cout << "Medico no encontrado.\n";
 }
 
-void Medico::listarMedicos() {
+void Medico::listarMedicos(const std::vector<Medico>& listaMedicos) {
     if (listaMedicos.empty()) {
         std::cout << "No hay medicos registrados.\n";
         return;
@@ -181,7 +179,7 @@ void Medico::listarMedicos() {
     }
 }
 
-void Medico::cargarMedicos() {
+void Medico::cargarMedicos(std::vector<Medico>& listaMedicos, int& contadorMedico) {
     std::ifstream archivo("medicos.txt");
     if (!archivo.is_open()) {
         std::cout << "No se encontro el archivo, creando uno nuevo...\n";
@@ -190,6 +188,7 @@ void Medico::cargarMedicos() {
 
     listaMedicos.clear();
     std::string linea;
+    int maxID = 0;
     while (std::getline(archivo, linea)) {
         std::stringstream ss(linea);
         std::string IDMedico, nombre, direccion, genero, especialidad, estado;
@@ -206,13 +205,15 @@ void Medico::cargarMedicos() {
         if (!estadoBool) {
             listaMedicos.back().darDeBaja();
         }
+        maxID = std::max(maxID, std::stoi(IDMedico));
     }
 
+    contadorMedico = maxID + 1;
     archivo.close();
     std::cout << "Datos de los medicos cargados correctamente.\n";
 }
 
-void Medico::guardarMedicos() {
+void Medico::guardarMedicos(const std::vector<Medico>& listaMedicos) {
     std::ofstream archivo("medicos.txt");
     if (!archivo.is_open()) {
         std::cout << "Error al abrir el archivo de medicos.\n";
